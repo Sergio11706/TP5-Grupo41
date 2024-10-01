@@ -16,4 +16,11 @@ public class CollectionUsuario {
 	            usuario.mostrarDatos();
 	        }
 	   }
+	    
+	   public static Usuario buscarUsuarioPorCodigo(int codigo) {
+		   for (Usuario usuario : usuarios) {
+			   if(usuario.getId()==codigo) return usuario;
+		   }
+		   return null;
+	   }
 }

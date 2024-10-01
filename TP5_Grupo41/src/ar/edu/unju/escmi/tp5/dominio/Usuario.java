@@ -1,6 +1,6 @@
 package ar.edu.unju.escmi.tp5.dominio;
 
-public class Usuario {
+public abstract class Usuario {
 	protected int id;
 	protected String nombre;
 	protected String apellido;

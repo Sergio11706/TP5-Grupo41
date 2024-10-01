@@ -2,6 +2,7 @@ package ar.edu.unju.escmi.tp5.collections;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import ar.edu.unju.escmi.tp5.dominio.Libro;
 
 public class CollectionLibro {
@@ -17,5 +18,12 @@ public class CollectionLibro {
             libro.mostrarDatos();
             System.out.println("-------------------");
         }
+    }
+    
+    public static Libro buscarLibroPorCodigo(String codigo) {
+    	for(Libro libro : libros) {
+    		if(libro.getId().equals(codigo)) return libro;
+    	}
+    	return null;
     }
 }
