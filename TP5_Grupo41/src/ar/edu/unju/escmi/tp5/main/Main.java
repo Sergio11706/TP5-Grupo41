@@ -1,9 +1,17 @@
 package ar.edu.unju.escmi.tp5.main;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+
 import ar.edu.unju.escmi.tp5.collections.CollectionLibro;
+import ar.edu.unju.escmi.tp5.collections.CollectionPrestamo;
 import ar.edu.unju.escmi.tp5.dominio.*;
 import ar.edu.unju.escmi.tp5.collections.CollectionUsuario;
+import ar.edu.unju.escmi.tp5.exceptions.*;
 
 
 public class Main {
@@ -32,6 +40,10 @@ public class Main {
 	                case 2:
 	                	registrarUsuario(scanner);
 	                break;	
+	                case 3:
+	                	registrarPrestamo(scanner);
+	                break;
+	                
 	                case 6:
 	                    System.out.println("SALIENDO DEL MENU");
 	                    break;
@@ -104,6 +116,73 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+    
+    public static void registrarPrestamo(Scanner scanner) {
+    	
+    	List<Libro> libros = CollectionLibro.libros;
+    	for (Libro libro : libros) {
+    		if(libro.isEstado()) {
+    			libro.mostrarDatos();
+    		}
+    	}
+    	
+    	try {    		
+        	System.out.println("\nIngrese el id del libro ha prestar: ");
+        	String idLibro = scanner.nextLine();
+        	Libro libroPrestado = CollectionLibro.buscarLibroPorCodigo(idLibro);
+        	if (libroPrestado == null) {
+                throw new LibroNoEncontradoException("El libro con id " + idLibro + " no fue encontrado.");
+            }
+        
+        	if (libroPrestado.isEstado()==false){
+                throw new LibroNoDisponibleException("El libro con id " + idLibro + " no está disponible para prestar.");
+            }
+             
+           	
+	    	List<Usuario> usuarios = CollectionUsuario.usuarios;
+	    	for(Usuario usuario : usuarios) {
+	    		usuario.mostrarDatos();
+	    	}
+	    	System.out.println("\nIngrese el id del usuario: ");
+	    	int idUsuario = scanner.nextInt();    	
+	    	scanner.nextLine();
+	    	Usuario usuarioPrestado = CollectionUsuario.buscarUsuarioPorCodigo(idUsuario);
+	    	
+	    	if (usuarioPrestado == null) {
+	            throw new UsuarioNoRegistradoException("El usuario con id " + idUsuario + " no está registrado.");
+	        }
+	    	
+			System.out.println("\nIngrese el id del prestamo: ");
+			String idPrestamo = scanner.nextLine();
+	    	
+			
+			System.out.println("\nIngrese la fecha del prestamo (YYYY-MM-DD): ");
+			String fechaPrestamo = scanner.nextLine();
+			DateTimeFormatter formato = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toFormatter();
+			LocalDate fecPrestamo;
+			
+	        try {
+	            fecPrestamo = LocalDate.parse(fechaPrestamo, formato);
+	        } catch (DateTimeParseException e) {
+	            System.out.println("Error: El formato de la fecha es inválido. Debe ser YYYY-MM-DD.");
+	            return; 
+	        }
+	    	
+			Prestamo prestamo = new Prestamo(idPrestamo, fecPrestamo, null, libroPrestado, usuarioPrestado);
+			CollectionPrestamo.agregarPrestamo(prestamo);
+			prestamo.mostrarDatos();
+			System.out.println("\nPrestamo realizado correctamente.\n");
+			libroPrestado.setEstado(false);
+	
+	        } catch (LibroNoEncontradoException | LibroNoDisponibleException | UsuarioNoRegistradoException e) {
+	            System.out.println("Error: " + e.getMessage());
+	        } catch (Exception e) {
+	            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
+	        }
+
+    	
+
     }
 }
   
