@@ -23,6 +23,10 @@ public class Prestamo {
         this.libro.setEstado(true);
     }
     
+	public String getId() {
+	    return id;
+	}
+	
     public void mostrarDatos() {
         System.out.println("ID del préstamo: " + id);
         System.out.println("Fecha de préstamo: " + fechaPrestamo);

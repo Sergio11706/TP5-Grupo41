@@ -39,11 +39,16 @@ public class Main {
 	                    break;
 	                case 2:
 	                	registrarUsuario(scanner);
-	                break;	
+	                	break;	
 	                case 3:
 	                	registrarPrestamo(scanner);
-	                break;
-	                
+	                	break;
+	                case 4:
+	                    registrarDevolucion(scanner);
+	                    break;
+	                case 5:
+	                    CollectionLibro.mostrarLibros();
+	                    break;
 	                case 6:
 	                    System.out.println("SALIENDO DEL MENU");
 	                    break;
@@ -180,11 +185,40 @@ public class Main {
 	        } catch (Exception e) {
 	            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
 	        }
-
-    	
-
     }
+    
+    public static void registrarDevolucion(Scanner scanner) {
+        List<Prestamo> prestamos = CollectionPrestamo.prestamos;
+        
+        for (Prestamo prestamo : prestamos) {
+            prestamo.mostrarDatos();
+        }
+        
+        try {
+            System.out.println("\nIngrese el ID del préstamo a devolver: ");
+            String idPrestamo = scanner.nextLine();
+            
+            Prestamo prestamo = prestamos.stream().filter(p -> p.getId().equals(idPrestamo)).findFirst().orElse(null);
+            
+            if (prestamo == null) {
+                System.out.println("Error: Préstamo no encontrado.");
+                return;
+            }
+            
+            System.out.println("Ingrese la fecha de devolución (YYYY-MM-DD): ");
+            String fechaDevolucion = scanner.nextLine();
+            
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate fecDevolucion = LocalDate.parse(fechaDevolucion, formato);
+            
+            prestamo.registrarDevolucion(fecDevolucion);
+            System.out.println("Devolución registrada correctamente.");
+            
+        } catch (DateTimeParseException e) {
+            System.out.println("Error: Formato de fecha inválido.");
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+    }
+    
 }
-  
-
-   
