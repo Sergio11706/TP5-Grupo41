@@ -10,7 +10,7 @@ public class CollectionLibro {
 
     public static void agregarLibro(Libro libro) {
         libros.add(libro);
-        System.out.println("LIBRO AGREGADO CON EXITO");
+        System.out.println("\nLibro agregado correctamente");
     }
 
     public static void mostrarLibros() {

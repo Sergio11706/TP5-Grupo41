@@ -3,11 +3,11 @@ package ar.edu.unju.escmi.tp5.dominio;
 import java.time.LocalDate;
 
 public class Prestamo {
-	protected String id;
-	protected LocalDate fechaPrestamo;
-	protected LocalDate fechaDevolucion;
-	protected Libro libro;
-	protected Usuario usuario;
+	private String id;
+	private LocalDate fechaPrestamo;
+	private LocalDate fechaDevolucion;
+	private Libro libro;
+	private Usuario usuario;
 	
     public Prestamo(String id, LocalDate fechaPrestamo, LocalDate fechaDevolucion, Libro libro, Usuario usuario) {
 		super();
@@ -27,8 +27,16 @@ public class Prestamo {
 	    return id;
 	}
 	
-    public void mostrarDatos() {
-        System.out.println("ID del préstamo: " + id);
+    public LocalDate getFechaDevolucion() {
+		return fechaDevolucion;
+	}
+
+	public void setFechaDevolucion(LocalDate fechaDevolucion) {
+		this.fechaDevolucion = fechaDevolucion;
+	}
+
+	public void mostrarDatos() {
+        System.out.println("\nID del préstamo: " + id);
         System.out.println("Fecha de préstamo: " + fechaPrestamo);
         System.out.println("Fecha de devolución: " + (fechaDevolucion != null ? fechaDevolucion : "No devuelto aun"));
         System.out.println("Libro: " + libro.getTitulo());

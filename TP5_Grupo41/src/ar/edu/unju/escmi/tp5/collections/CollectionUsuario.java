@@ -17,9 +17,9 @@ public class CollectionUsuario {
 	        }
 	   }
 	    
-	   public static Usuario buscarUsuarioPorCodigo(int codigo) {
+	   public static Usuario buscarUsuarioPorID(String id) {
 		   for (Usuario usuario : usuarios) {
-			   if(usuario.getId()==codigo) return usuario;
+			   if(usuario.getId().equals(id)) return usuario;
 		   }
 		   return null;
 	   }

@@ -57,7 +57,7 @@ public class Libro {
     }
 
     public void mostrarDatos() {
-        System.out.println("ID: " + id);
+        System.out.println("\nID: " + id);
         System.out.println("Título: " + titulo);
         System.out.println("Autor: " + autor);
         System.out.println("ISBN: " + isbn);

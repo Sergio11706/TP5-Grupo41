@@ -1,7 +1,5 @@
 package ar.edu.unju.escmi.tp5.main;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -12,12 +10,13 @@ import ar.edu.unju.escmi.tp5.collections.CollectionPrestamo;
 import ar.edu.unju.escmi.tp5.dominio.*;
 import ar.edu.unju.escmi.tp5.collections.CollectionUsuario;
 import ar.edu.unju.escmi.tp5.exceptions.*;
+import ar.edu.unju.escmi.tp5.utils.FechaUtil;
 
 
 public class Main {
     public static void main(String[] args) {
     	  Scanner scanner = new Scanner(System.in);
-	        int opc;
+	        String opc;
 	        
 	        do {
 	        
@@ -30,39 +29,40 @@ public class Main {
 	            System.out.println("6. Salir");
 	            System.out.print("Seleccione una opción: ");
 	            
-	            opc = scanner.nextInt();
-	            scanner.nextLine();  
+	            opc = scanner.nextLine();  
 
 	            switch(opc) {
-	                case 1:
+	                case "1":
 	                	registrarLibro(scanner);
 	                    break;
-	                case 2:
+	                case "2":
 	                	registrarUsuario(scanner);
 	                	break;	
-	                case 3:
+	                case "3":
 	                	registrarPrestamo(scanner);
 	                	break;
-	                case 4:
+	                case "4":
 	                    registrarDevolucion(scanner);
 	                    break;
-	                case 5:
-	                    CollectionLibro.mostrarLibros();
+	                case "5":
+	                	List<Libro> libros = CollectionLibro.libros;
+	                    if(libros.isEmpty()) System.out.println("\nLista de libros vacia");
+	                    else CollectionLibro.mostrarLibros();
 	                    break;
-	                case 6:
-	                    System.out.println("SALIENDO DEL MENU");
+	                case "6":
+	                    System.out.println("\nSALIENDO DEL MENU");
 	                    break;
 	                default:
-	                    System.out.println("OPCION INVALIDA. Intentelo nuevamente");
+	                    System.out.println("\nOPCION INVALIDA. Intentelo nuevamente");
 	            }
-	        } while(opc != 6);
+	        } while(!opc.equals("6"));
 
 	        scanner.close();
 	     
 	    }
 
     public static void registrarLibro(Scanner scanner) {
-        System.out.print("Ingrese el ID del libro: ");
+        System.out.print("\nIngrese el ID del libro: ");
         String id = scanner.nextLine();
         System.out.print("Ingrese el título del libro: ");
         String titulo = scanner.nextLine();
@@ -78,19 +78,22 @@ public class Main {
     public static void registrarUsuario(Scanner scanner) throws InputMismatchException
     {
     	try {
-            System.out.println("Registrar usuario:");
+            System.out.println("\nRegistrar usuario:");
             System.out.println("1. Alumno");
             System.out.println("2. Bibliotecario");
-            int opcion = scanner.nextInt();
-            scanner.nextLine(); 
+            System.out.print("Seleccione una opción: ");
+            String opcion = scanner.nextLine();
 
-            if (opcion == 1) {
+            switch(opcion) {
+            case "1":
+            	System.out.print("\nIngrese el ID del usuario: ");
+                String id1 = scanner.nextLine();
                 System.out.print("Ingrese el nombre del alumno: ");
-                String nombre = scanner.nextLine();
+                String nombreAlumno = scanner.nextLine();
                 System.out.print("Ingrese el apellido del alumno: ");
-                String apellido = scanner.nextLine();
+                String apellidoAlumno = scanner.nextLine();
                 System.out.print("Ingrese el email del alumno: ");
-                String email = scanner.nextLine();
+                String emailAlumno = scanner.nextLine();
                 System.out.print("Ingrese el curso del alumno: ");
                 int curso = scanner.nextInt();
                 scanner.nextLine(); 
@@ -99,27 +102,42 @@ public class Main {
                 scanner.nextLine(); 
                 
 
-                Alumno alumno = new Alumno(1, nombre, apellido, email, curso, numeroLibreta);
+                Alumno alumno = new Alumno(id1, nombreAlumno, apellidoAlumno, emailAlumno, curso, numeroLibreta);
                 CollectionUsuario.agregarUsuario(alumno);
-            } else if (opcion == 2) {
+                
+                alumno.mostrarDatos();
+                
+                System.out.println("\nUsuario agregado correctamente");
+                
+            break;
+            case "2":
+            	System.out.print("\nIngrese el ID del usuario: ");
+                String id2 = scanner.nextLine();
                 System.out.print("Ingrese el nombre del bibliotecario: ");
-                String nombre = scanner.nextLine();
+                String nombreBibliotecario = scanner.nextLine();
                 System.out.print("Ingrese el apellido del bibliotecario: ");
-                String apellido = scanner.nextLine();
+                String apellidoBibliotecario = scanner.nextLine();
                 System.out.print("Ingrese el email del bibliotecario: ");
-                String email = scanner.nextLine();
+                String emailBibliotecario = scanner.nextLine();
                 System.out.print("Ingrese el legajo del bibliotecario: ");
                 int legajo = scanner.nextInt();
                 scanner.nextLine(); 
                 
-                Bibliotecario bibliotecario = new Bibliotecario(1, nombre, apellido, email, legajo);
+                Bibliotecario bibliotecario = new Bibliotecario(id2, nombreBibliotecario, apellidoBibliotecario, emailBibliotecario, legajo);
                 CollectionUsuario.agregarUsuario(bibliotecario);
+                
+                bibliotecario.mostrarDatos();
+                
+                System.out.println("\nUsuario agregado correctamente");
+            
+            break;
+            default: System.out.println("\nError al seleccionar opcion");
             }
 
-            System.out.println("Usuarios registrados:");
-            CollectionUsuario.mostrarUsuarios();
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            
+        } catch (InputMismatchException e) {
+            System.out.println("\nError: valor no permitido \nUsuario NO agregado");
+            scanner.nextLine();
         }
     }
     
@@ -133,15 +151,15 @@ public class Main {
     	}
     	
     	try {    		
-        	System.out.println("\nIngrese el id del libro ha prestar: ");
+        	System.out.print("\nIngrese el ID del libro ha prestar: ");
         	String idLibro = scanner.nextLine();
         	Libro libroPrestado = CollectionLibro.buscarLibroPorCodigo(idLibro);
         	if (libroPrestado == null) {
-                throw new LibroNoEncontradoException("El libro con id " + idLibro + " no fue encontrado.");
+                throw new LibroNoEncontradoException("El libro con ID " + idLibro + " no fue encontrado.");
             }
         
         	if (libroPrestado.isEstado()==false){
-                throw new LibroNoDisponibleException("El libro con id " + idLibro + " no está disponible para prestar.");
+                throw new LibroNoDisponibleException("\nEl libro con ID " + idLibro + " no está disponible para prestar.");
             }
              
            	
@@ -149,75 +167,74 @@ public class Main {
 	    	for(Usuario usuario : usuarios) {
 	    		usuario.mostrarDatos();
 	    	}
-	    	System.out.println("\nIngrese el id del usuario: ");
-	    	int idUsuario = scanner.nextInt();    	
-	    	scanner.nextLine();
-	    	Usuario usuarioPrestado = CollectionUsuario.buscarUsuarioPorCodigo(idUsuario);
+	    	System.out.print("\nIngrese el ID del usuario: ");
+	    	String idUsuario = scanner.nextLine();    	
+	    	Usuario usuarioPrestado = CollectionUsuario.buscarUsuarioPorID(idUsuario);
 	    	
 	    	if (usuarioPrestado == null) {
-	            throw new UsuarioNoRegistradoException("El usuario con id " + idUsuario + " no está registrado.");
+	            throw new UsuarioNoRegistradoException("\nEl usuario con ID " + idUsuario + " no está registrado.");
 	        }
 	    	
-			System.out.println("\nIngrese el id del prestamo: ");
+			System.out.print("\nIngrese el ID del prestamo: ");
 			String idPrestamo = scanner.nextLine();
 	    	
 			
-			System.out.println("\nIngrese la fecha del prestamo (YYYY-MM-DD): ");
+			System.out.print("Ingrese la fecha del prestamo (YYYY-MM-DD): ");
 			String fechaPrestamo = scanner.nextLine();
-			DateTimeFormatter formato = new DateTimeFormatterBuilder().append(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toFormatter();
 			LocalDate fecPrestamo;
 			
 	        try {
-	            fecPrestamo = LocalDate.parse(fechaPrestamo, formato);
+	        	
+	        	fecPrestamo = FechaUtil.convertirStringLocalDate(fechaPrestamo);
+	        	
 	        } catch (DateTimeParseException e) {
-	            System.out.println("Error: El formato de la fecha es inválido. Debe ser YYYY-MM-DD.");
+	        	
+	            System.out.println("\nError: El formato de la fecha es inválido. Debe ser YYYY-MM-DD");
 	            return; 
+	            
 	        }
 	    	
 			Prestamo prestamo = new Prestamo(idPrestamo, fecPrestamo, null, libroPrestado, usuarioPrestado);
 			CollectionPrestamo.agregarPrestamo(prestamo);
 			prestamo.mostrarDatos();
-			System.out.println("\nPrestamo realizado correctamente.\n");
+			System.out.println("\nPrestamo realizado correctamente");
 			libroPrestado.setEstado(false);
 	
 	        } catch (LibroNoEncontradoException | LibroNoDisponibleException | UsuarioNoRegistradoException e) {
-	            System.out.println("Error: " + e.getMessage());
+	            System.out.println("\nError: " + e.getMessage());
 	        } catch (Exception e) {
-	            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
+	            System.out.println("\nOcurrió un error inesperado: " + e.getMessage());
 	        }
     }
     
     public static void registrarDevolucion(Scanner scanner) {
         List<Prestamo> prestamos = CollectionPrestamo.prestamos;
         
-        for (Prestamo prestamo : prestamos) {
-            prestamo.mostrarDatos();
-        }
+        prestamos.stream().filter(prestamo -> prestamo.getFechaDevolucion()==null).forEach(prestamo -> prestamo.mostrarDatos());
         
         try {
-            System.out.println("\nIngrese el ID del préstamo a devolver: ");
+            System.out.print("\nIngrese el ID del préstamo a devolver: ");
             String idPrestamo = scanner.nextLine();
             
             Prestamo prestamo = prestamos.stream().filter(p -> p.getId().equals(idPrestamo)).findFirst().orElse(null);
             
             if (prestamo == null) {
-                System.out.println("Error: Préstamo no encontrado.");
+                System.out.println("\nError: Préstamo no encontrado");
                 return;
             }
             
-            System.out.println("Ingrese la fecha de devolución (YYYY-MM-DD): ");
+            System.out.print("Ingrese la fecha de devolución (YYYY-MM-DD): ");
             String fechaDevolucion = scanner.nextLine();
             
-            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate fecDevolucion = LocalDate.parse(fechaDevolucion, formato);
+            LocalDate fecha = FechaUtil.convertirStringLocalDate(fechaDevolucion);
             
-            prestamo.registrarDevolucion(fecDevolucion);
-            System.out.println("Devolución registrada correctamente.");
+            prestamo.registrarDevolucion(fecha);
+            System.out.println("\nDevolución registrada correctamente");
             
         } catch (DateTimeParseException e) {
-            System.out.println("Error: Formato de fecha inválido.");
+            System.out.println("\nError: Formato de fecha inválido");
         } catch (Exception e) {
-            System.out.println("Error inesperado: " + e.getMessage());
+            System.out.println("\nError inesperado: " + e.getMessage());
         }
     }
     
