@@ -27,6 +27,10 @@ public class Prestamo {
 	    return id;
 	}
 	
+	public LocalDate getFechaPrestamo() {
+        return fechaPrestamo;
+    }
+	
     public LocalDate getFechaDevolucion() {
 		return fechaDevolucion;
 	}

@@ -141,7 +141,7 @@ public class Main {
         }
     }
     
-    public static void registrarPrestamo(Scanner scanner) {
+public static void registrarPrestamo(Scanner scanner) {
     	
     	List<Libro> libros = CollectionLibro.libros;
     	for (Libro libro : libros) {
@@ -179,7 +179,7 @@ public class Main {
 			String idPrestamo = scanner.nextLine();
 	    	
 			
-			System.out.print("Ingrese la fecha del prestamo (YYYY-MM-DD): ");
+			System.out.print("Ingrese la fecha del prestamo (dd/MM/yyyy): ");
 			String fechaPrestamo = scanner.nextLine();
 			LocalDate fecPrestamo;
 			
@@ -189,7 +189,7 @@ public class Main {
 	        	
 	        } catch (DateTimeParseException e) {
 	        	
-	            System.out.println("\nError: El formato de la fecha es inválido. Debe ser YYYY-MM-DD");
+	            System.out.println("\nError: El formato de la fecha es inválido. Debe ser dd/MM/yyyy");
 	            return; 
 	            
 	        }
@@ -210,32 +210,48 @@ public class Main {
     public static void registrarDevolucion(Scanner scanner) {
         List<Prestamo> prestamos = CollectionPrestamo.prestamos;
         
-        prestamos.stream().filter(prestamo -> prestamo.getFechaDevolucion()==null).forEach(prestamo -> prestamo.mostrarDatos());
-        
-        try {
-            System.out.print("\nIngrese el ID del préstamo a devolver: ");
-            String idPrestamo = scanner.nextLine();
-            
-            Prestamo prestamo = prestamos.stream().filter(p -> p.getId().equals(idPrestamo)).findFirst().orElse(null);
-            
-            if (prestamo == null) {
-                System.out.println("\nError: Préstamo no encontrado");
-                return;
-            }
-            
-            System.out.print("Ingrese la fecha de devolución (YYYY-MM-DD): ");
-            String fechaDevolucion = scanner.nextLine();
-            
-            LocalDate fecha = FechaUtil.convertirStringLocalDate(fechaDevolucion);
-            
-            prestamo.registrarDevolucion(fecha);
-            System.out.println("\nDevolución registrada correctamente");
-            
-        } catch (DateTimeParseException e) {
-            System.out.println("\nError: Formato de fecha inválido");
-        } catch (Exception e) {
-            System.out.println("\nError inesperado: " + e.getMessage());
+        List<Prestamo> prestamosPendientes = prestamos.stream()
+                .filter(prestamo -> prestamo.getFechaDevolucion() == null).toList();
+
+        if (prestamosPendientes.isEmpty()) {
+            System.out.println("\nNo hay prestamos pendientes de devolución.");
+            return;
         }
+
+        prestamosPendientes.forEach(Prestamo::mostrarDatos);
+        
+        Prestamo prestamo = null;
+        while (prestamo == null) {
+            System.out.print("\nIngrese el ID del prestamo a devolver: ");
+            String idPrestamo = scanner.nextLine();
+
+            prestamo = prestamos.stream().filter(p -> p.getId().equals(idPrestamo)).findFirst().orElse(null);
+
+            if (prestamo == null) {
+                System.out.println("\nPrestamo no encontrado");
+            }
+        }
+
+        LocalDate fecha = null;
+        while (fecha == null) {
+            System.out.print("Ingrese la fecha de devolución (dd/MM/yyyy): ");
+            String fechaDevolucion = scanner.nextLine();
+
+            try {
+                fecha = FechaUtil.convertirStringLocalDate(fechaDevolucion);
+                
+                if (fecha.isBefore(prestamo.getFechaPrestamo())) {
+                    System.out.println("\nError: La fecha de devolución no puede ser anterior a la fecha del prestamo.");
+                    fecha = null;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("\nError: El formato de fecha es inválido");
+            } catch (Exception e) {
+                System.out.println("\nError inesperado: " + e.getMessage());
+            }
+        }
+
+        prestamo.registrarDevolucion(fecha);
+        System.out.println("\nDevolución registrada correctamente");
     }
-    
 }
