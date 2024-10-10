@@ -41,7 +41,7 @@ public class Prestamo {
 
 	public void mostrarDatos() {
         System.out.println("\nID del préstamo: " + id);
-        System.out.println("Fecha de préstamo: " + fechaPrestamo);
+        System.out.println("Fecha de préstamo: " + fechaPrestamo.getDayOfMonth() + "/" + fechaPrestamo.getMonthValue() + "/" + fechaPrestamo.getYear());
         System.out.println("Fecha de devolución: " + (fechaDevolucion != null ? fechaDevolucion : "No devuelto aun"));
         System.out.println("Libro: " + libro.getTitulo());
         System.out.println("Usuario: " + usuario.getApellido() + ", " + usuario.getNombre() + ".");
