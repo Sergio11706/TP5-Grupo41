@@ -5,6 +5,9 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+
+
+
 import ar.edu.unju.escmi.tp5.collections.CollectionLibro;
 import ar.edu.unju.escmi.tp5.collections.CollectionPrestamo;
 import ar.edu.unju.escmi.tp5.dominio.*;
@@ -63,101 +66,256 @@ public class Main {
 
     public static void registrarLibro(Scanner scanner) {
        
-    	System.out.print("\nIngrese el ID del libro: ");
-        String id = scanner.nextLine();
-        
-        System.out.print("Ingrese el título del libro: ");
-        String titulo = scanner.nextLine();
-        
-        System.out.print("Ingrese el autor del libro: ");
-        String autor = scanner.nextLine();
-        
-        System.out.print("Ingrese el ISBN del libro: ");
-        String isbn = scanner.nextLine();
+    	String id = "";
+        boolean idValido = false;
+        while (!idValido) {
+            try {
+                System.out.print("\nIngrese el ID del libro: ");
+                id = scanner.nextLine();
+                validarNumerico(id, "ID del libro");  
+                idValido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        String titulo = "";
+        boolean tituloValido = false;
+        while (!tituloValido) {
+            try {
+                System.out.print("Ingrese el título del libro: ");
+                titulo = scanner.nextLine();
+                validarCadenaNoVacia(titulo, "título del libro");  
+                tituloValido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        String autor = "";
+        boolean autorValido = false;
+        while (!autorValido) {
+            try {
+                System.out.print("Ingrese el autor del libro: ");
+                autor = scanner.nextLine();
+                validarCadenaNoVacia(autor, "autor del libro");  
+                autorValido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        String isbn = "";
+        boolean isbnValido = false;
+        while (!isbnValido) {
+            try {
+                System.out.print("Ingrese el ISBN del libro: ");
+                isbn = scanner.nextLine();
+                validarNumerico(isbn, "ISBN");  
+                isbnValido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
 
         Libro libro = new Libro(id, titulo, autor, isbn);
         CollectionLibro.agregarLibro(libro);
+
+        System.out.println("\nLibro registrado correctamente.");
     }
     
-    public static void registrarUsuario(Scanner scanner) throws InputMismatchException {
+   public static void registrarUsuario(Scanner scanner) throws InputMismatchException {
     	
-    	boolean band = true;
-    	while(band) {
-    		
-    		band=false;
-	    	try {
+	   boolean band = true;
+	    while (band) {
+	        band = false;
+	        try {
 	            System.out.println("\nRegistrar usuario:");
 	            System.out.println("1. Alumno");
 	            System.out.println("2. Bibliotecario");
 	            System.out.print("Seleccione una opción: ");
 	            String opcion = scanner.nextLine();
-	
-	            switch(opcion) {
-	            case "1":
-	            	System.out.print("\nIngrese el ID del usuario: ");
-	                String id1 = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el nombre del alumno: ");
-	                String nombreAlumno = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el apellido del alumno: ");
-	                String apellidoAlumno = scanner.nextLine();
-	                
+
+	            if (!opcion.equals("1") && !opcion.equals("2")) {
+	                throw new InputMismatchException("Opción inválida. Debe ser 1 o 2.");
+	            }
+	        
+	            if (opcion.equals("1")) {
+	                String id1 = "";
+	                boolean idValido = false;
+	                while (!idValido) {
+	                    try {
+	                        System.out.print("\nIngrese el ID del usuario: ");
+	                        id1 = scanner.nextLine();
+	                        validarNumerico(id1, "ID");  
+	                        idValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
+	                String nombreAlumno = "";
+	                boolean nombreValido = false;
+	                while (!nombreValido) {
+	                    try {
+	                        System.out.print("Ingrese el nombre del alumno: ");
+	                        nombreAlumno = scanner.nextLine();
+	                        validarCadenaNoVacia(nombreAlumno, "nombre");  
+	                        nombreValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
+	                String apellidoAlumno = "";
+	                boolean apellidoValido = false;
+	                while (!apellidoValido) {
+	                    try {
+	                        System.out.print("Ingrese el apellido del alumno: ");
+	                        apellidoAlumno = scanner.nextLine();
+	                        validarCadenaNoVacia(apellidoAlumno, "apellido");  
+	                        apellidoValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
 	                System.out.print("Ingrese el email del alumno: ");
 	                String emailAlumno = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el curso del alumno: ");
-	                int curso = scanner.nextInt();
-	                scanner.nextLine(); 
-	                
-	                System.out.print("Ingrese el número de libreta del alumno: ");
-	                int numeroLibreta = scanner.nextInt();
-	                scanner.nextLine(); 
-	                
+
+	                int curso = 0;
+	                boolean cursoValido = false;
+	                while (!cursoValido) {
+	                    try {
+	                        System.out.print("Ingrese el curso del alumno (número): ");
+	                        curso = solicitarEntero(scanner);
+	                        cursoValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: Ingrese un número válido para el curso.");
+	                        scanner.nextLine(); 
+	                    }
+	                }
+
+	                int numeroLibreta = 0;
+	                boolean libretaValida = false;
+	                while (!libretaValida) {
+	                    try {
+	                        System.out.print("Ingrese el número de libreta del alumno: ");
+	                        numeroLibreta = solicitarEntero(scanner);
+	                        libretaValida = true; 
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: Ingrese un número válido para la libreta.");
+	                        scanner.nextLine(); 
+	                    }
+	                }
+
 	                Alumno alumno = new Alumno(id1, nombreAlumno, apellidoAlumno, emailAlumno, curso, numeroLibreta);
 	                CollectionUsuario.agregarUsuario(alumno);
-	                
 	                alumno.mostrarDatos();
-	                
 	                System.out.println("\nUsuario agregado correctamente");
-	                
-	            break;
-	            case "2":
-	            	System.out.print("\nIngrese el ID del usuario: ");
-	                String id2 = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el nombre del bibliotecario: ");
-	                String nombreBibliotecario = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el apellido del bibliotecario: ");
-	                String apellidoBibliotecario = scanner.nextLine();
-	                
+
+	           
+	            } else if (opcion.equals("2")) {
+	                String id2 = "";
+	                boolean idValido = false;
+	                while (!idValido) {
+	                    try {
+	                        System.out.print("\nIngrese el ID del usuario: ");
+	                        id2 = scanner.nextLine();
+	                        validarNumerico(id2, "ID");  
+	                        idValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
+	                String nombreBibliotecario = "";
+	                boolean nombreValido = false;
+	                while (!nombreValido) {
+	                    try {
+	                        System.out.print("Ingrese el nombre del bibliotecario: ");
+	                        nombreBibliotecario = scanner.nextLine();
+	                        validarCadenaNoVacia(nombreBibliotecario, "nombre");  
+	                        nombreValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
+	                String apellidoBibliotecario = "";
+	                boolean apellidoValido = false;
+	                while (!apellidoValido) {
+	                    try {
+	                        System.out.print("Ingrese el apellido del bibliotecario: ");
+	                        apellidoBibliotecario = scanner.nextLine();
+	                        validarCadenaNoVacia(apellidoBibliotecario, "apellido");  
+	                        apellidoValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: " + e.getMessage());
+	                    }
+	                }
+
 	                System.out.print("Ingrese el email del bibliotecario: ");
 	                String emailBibliotecario = scanner.nextLine();
-	                
-	                System.out.print("Ingrese el legajo del bibliotecario: ");
-	                int legajo = scanner.nextInt();
-	                scanner.nextLine(); 
-	                
+
+	                int legajo = 0;
+	                boolean legajoValido = false;
+	                while (!legajoValido) {
+	                    try {
+	                        System.out.print("Ingrese el legajo del bibliotecario: ");
+	                        legajo = solicitarEntero(scanner);
+	                        legajoValido = true;
+	                    } catch (InputMismatchException e) {
+	                        System.out.println("Error: Ingrese un número válido para el legajo.");
+	                        scanner.nextLine(); 
+	                    }
+	                }
+
 	                Bibliotecario bibliotecario = new Bibliotecario(id2, nombreBibliotecario, apellidoBibliotecario, emailBibliotecario, legajo);
 	                CollectionUsuario.agregarUsuario(bibliotecario);
-	                
 	                bibliotecario.mostrarDatos();
-	                
 	                System.out.println("\nUsuario agregado correctamente");
-	                
-	            break;
-	            default: 
-	            	System.out.println("\nError al seleccionar opcion");
-	            	band=true;
-	            }    
-	        } 
-	    	catch (InputMismatchException e) {
-	            System.out.println("\nError: valor no permitido \nUsuario NO agregado");
-	            scanner.nextLine();
+	            }
+
+	        } catch (InputMismatchException e) {
+	            System.out.println("\nError: " + e.getMessage());
+	            band = true;
+	            scanner.nextLine();  
 	        }
-    	}
+	    }
     }
+   
+   public static void validarCadenaNoVacia(String cadena, String campo) throws InputMismatchException {
+	   if (cadena == null || cadena.trim().isEmpty()) {
+	        throw new InputMismatchException("El campo " + campo + " no puede estar vacío.");
+	    }
+	   
+	    if (!cadena.matches("[a-zA-Z\\s]+")) {  
+	        throw new InputMismatchException("El campo " + campo + " no debe contener números.");
+	    }	   
+	}
+   
+   public static int solicitarEntero(Scanner scanner) {
+	    boolean valido = false;
+	    int valor = 0;
+	    while (!valido) {
+	        try {
+	            valor = scanner.nextInt();
+	            valido = true;
+	        } catch (InputMismatchException e) {
+	            System.out.println("Error!! Vuelva a ingresar el dato:");
+	            scanner.nextLine();  
+	        }
+	    }
+	    scanner.nextLine(); 
+	    return valor;
+	}
+   
+   public static void validarNumerico(String cadena, String campo) throws InputMismatchException {
+	    if (!cadena.matches("\\d+")) { 
+	        throw new InputMismatchException("El campo " + campo + " debe contener solo números.");
+	    }
+	}
     
 public static void registrarPrestamo(Scanner scanner) {
     	
@@ -306,3 +464,4 @@ public static void registrarPrestamo(Scanner scanner) {
         System.out.println("\nDevolución registrada correctamente");
     }
 }
+
